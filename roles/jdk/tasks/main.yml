@@ -1,0 +1,28 @@
+---
+
+- name: 上传并解压jdk
+  unarchive:
+    src: "{{ java_version }}"
+    dest: "{{ install_dir }}/"
+    creates: "{{ install_dir }}/{{ jdk_dir_name }}"
+    group: "{{ group_name }}"
+    owner: "{{ username }}"
+
+- name: 重命名jdk
+  shell:
+    mv "{{ install_dir }}/{{ jdk_dir_name }}" "{{ install_dir }}/jdk"
+  ignore_errors: yes
+
+- name: 添加jdk到所有用户
+  template:
+    src: java.sh.j2
+    dest: /etc/profile.d/java.sh
+  become: yes
+  become_user: root
+
+- name: 激活环境
+  shell:
+    sh /etc/profile.d/java.sh
+  become: yes
+  become_user: root
+  ignore_errors: yes

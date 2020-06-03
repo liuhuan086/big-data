@@ -1,0 +1,37 @@
+---
+
+- name: 上传并解压zookeeper
+  unarchive:
+    src: "{{ zookeeper_version }}"
+    dest: "{{ install_dir }}/"
+    # creates：一个文件名，当它已经存在时，这个步骤将不会被运行，可能是防止重名或者强制覆盖。
+    creates: "{{ install_dir }}/{{ zk_dir_name }}"
+    group: "{{ group_name }}"
+    owner: "{{ username }}"
+
+- name: 重命名zookeeper
+  shell:
+    mv "{{ install_dir }}/{{ zk_dir_name }}" "{{ install_dir }}"/zookeeper
+
+- name: 创建data目录
+  file:
+    path: "{{ item }}"
+    state: directory
+    group: "{{ group_name }}"
+    owner: "{{ username }}"
+  with_items:
+    - "{{ zk_data_dir }}"
+    - "{{ zk_config_dir }}"
+
+- name: 创建myid
+  shell:
+    echo {{ item }} > "{{ zk_data_dir }}/myid"
+  with_items:
+    - "{{ zk_id }}"
+
+- name: 更改zoo.cfg配置
+  template:
+    src: zoo.cfg.j2
+    dest: "{{ zk_config_dir }}/zoo.cfg"
+    group: "{{ group_name }}"
+    owner: "{{ username }}"

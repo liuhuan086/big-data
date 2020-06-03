@@ -1,0 +1,31 @@
+---
+# 如果您正在编写角色，并且要确保该角色中的值绝对使用该角色，并且不会被库存覆盖，
+# 则应在这里像这样放置它，库存值不能覆盖它。 但是，仍然会-e覆盖:
+# file: roles/x/vars/main.yml
+# this will absolutely be used in this role
+# http_port: 80
+
+# 这是插入关于角色的常量的一种方法，该常量始终为真。
+# 如果您不与其他人共享角色，则可以在此处放置特定于应用程序的行为，例如端口。
+# 但是，如果您要与他人共享角色，那么将变量放在此处可能会很不好。
+# 没有人能够使用库存来覆盖它们，但是他们仍然可以通过将参数传递给角色来实现。
+
+hadoop_version: hadoop-3.2.1.tar.gz
+
+hadoop_dir_name: hadoop-3.2.1
+
+workers:
+  - 192.168.7.101
+  - 192.168.7.102
+  - 192.168.7.103
+
+yarn:
+  - { regexp: "^#!/usr/bin/env bash", line: "YARN_RESOURCEMANAGER_USER={{ username }}" }
+  - { regexp: "^YARN_RESOURCEMANAGER_USER", line: "HDFS_DATANODE_SECURE_USER={{ username }}" }
+  - { regexp: "^HDFS_DATANODE_SECURE_USER", line: "YARN_NODEMANAGER_USER={{ username }}" }
+
+dfs:
+  - { regexp: "^#!/usr/bin/env bash", line: "TANODE_USER={{ username }}" }
+  - { regexp: "^TANODE_USER", line: "HDFS_NAMENODE_USER={{ username }}" }
+  - { regexp: "^HDFS_NAMENODE_USER", line: "HDFS_DATANODE_SECURE_USER={{ username }}" }
+  - { regexp: "^HDFS_DATANODE_SECURE_USER", line: "HDFS_SECONDARYNAMENODE_USER={{ username }}" }

@@ -1,0 +1,14 @@
+---
+
+local_ssh_path: /Users/liuhuan
+
+group_name: bigdata
+
+username: liuhuan
+
+ssh_key_dir: roles/ssh/templates
+
+install_dir: /home/{{ username }}
+
+all_node:
+  - 192.168.7.[101:103]

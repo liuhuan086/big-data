@@ -1,0 +1,31 @@
+[ssh]
+node01
+node02
+node03
+
+
+[ssh:vars]
+ansible_ssh_user=root
+ansible_ssh_pass=1
+
+[zk]
+node01 zk_id=1
+node02 zk_id=2
+node03 zk_id=3
+
+[hadoop]
+node01 nn_id=1 rm_id=2
+node02 nn_id=2 rm_id=2
+node03
+
+
+[nn1]
+node01
+
+[nn2]
+node02
+
+[jn]
+node01
+node02
+node03

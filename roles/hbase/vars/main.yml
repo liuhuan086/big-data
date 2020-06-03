@@ -1,0 +1,9 @@
+---
+hbase_version: hbase-2.0.2-bin.tar.gz
+
+hbase_dir_name: hbase-2.0.2
+
+hbase_nodes:
+  - 192.168.7.101
+  - 192.168.7.102
+  - 192.168.7.103

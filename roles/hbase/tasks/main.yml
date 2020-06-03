@@ -1,0 +1,33 @@
+---
+
+- name: 上传并解压hbase
+  unarchive:
+    src: "{{ hbase_version }}"
+    dest: "{{ install_dir }}/"
+    creates: "{{ install_dir }}/{{ hbase_dir_name }}"
+    group: "{{ group_name }}"
+    owner: "{{ username }}"
+
+- name: 重命名hbase
+  shell:
+    mv "{{ install_dir }}"/"{{ hbase_dir_name }}" {{ install_dir }}/hbase
+
+- name: 更改hbase xml等文件
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ install_dir }}/hbase/conf/{{ item }}"
+  with_items:
+    - backup-masters
+    - hbase-env.sh
+    - hbase-site.xml
+
+- name: 删除regionserver文件
+  file:
+    path: "{{ install_dir }}/hbase/conf/regionservers"
+    state: absent
+
+- name: 更改regionserver
+  shell:
+    echo "{{ item }}" >> "{{ install_dir }}/hbase/conf/regionservers"
+  with_items:
+    - "{{ hbase_nodes }}"

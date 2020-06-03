@@ -1,0 +1,8 @@
+---
+zookeeper_version: zookeeper-3.4.14.tar.gz
+
+zk_dir_name: zookeeper-3.4.14
+
+zk_data_dir: "{{ install_dir }}/zookeeper/data"
+
+zk_config_dir: "{{ install_dir }}/zookeeper/conf"

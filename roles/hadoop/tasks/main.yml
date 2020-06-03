@@ -1,0 +1,87 @@
+---
+
+##- name: 上传hadoop
+#  # copy模块
+#  # 使用copy模块时，会自动到files目录中查找需要调用的文件
+#  # src不需要指定文件路径，只需要指定文件名
+#  # dest: 目录不存在则创建
+##  copy:
+##   src: zookeeper-3.4.14.tar.gz
+##    dest: "{{ install_dir }}"
+
+- name: 上传并解压hadoop
+  unarchive:
+    src: "{{ hadoop_version }}"
+    dest: "{{ install_dir }}"
+    # creates：一个文件名，当它已经存在时，这个步骤将不会被运行，可能是防止重名或者强制覆盖。
+    creates: "{{ install_dir }}/{{ hadoop_dir_name }}"
+    group: "{{ group_name }}"
+    owner: "{{ username }}"
+
+- name: 重命名
+  shell:
+    mv "{{ install_dir }}/{{ hadoop_dir_name }}" "{{ install_dir }}"/hadoop
+
+- name: 配置xml文件
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ install_dir }}/hadoop/etc/hadoop/{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ group_name }}"
+  with_items:
+    - core-site.xml
+    - hdfs-site.xml
+    - mapred-site.xml
+    - yarn-site.xml
+
+- name: 删除workers文件
+  file:
+    path: "{{ install_dir }}/hadoop/etc/hadoop/workers"
+    state: absent
+
+- name: 配置workers
+  shell:
+    echo {{ item }} >> "{{ install_dir }}/hadoop/etc/hadoop/workers"
+  with_items:
+    - "{{ workers }}"
+
+- name: 配置hadoop/etc/hadoop/下的sh文件
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ install_dir }}/hadoop/etc/hadoop/{{ item }}"
+  loop:
+    - hadoop-env.sh
+    - yarn-env.sh
+
+- name: 修改start-dfs.sh
+  lineinfile:
+    dest: "{{ install_dir }}/hadoop/sbin/start-dfs.sh"
+    insertafter: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - "{{ dfs }}"
+
+- name: 修改stop-dfs.sh
+  lineinfile:
+    dest: "{{ install_dir }}/hadoop/sbin/stop-dfs.sh"
+    insertafter: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - "{{ dfs }}"
+
+- name: 修改stop-yarn.sh
+  lineinfile:
+    dest: "{{ install_dir }}/hadoop/sbin/stop-yarn.sh"
+    insertafter: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - "{{ yarn }}"
+
+- name: 修改start-yarn.sh
+  lineinfile:
+    dest: "{{ install_dir }}/hadoop/sbin/start-yarn.sh"
+    insertafter: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - "{{ yarn }}"
+

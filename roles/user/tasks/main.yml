@@ -1,0 +1,38 @@
+---
+- name: 删除远程主机公钥
+  file:
+    path: "{{ install_dir }}/.ssh"
+    state: absent
+
+- name: 删除用户
+  user:
+    name: "{{ username }}"
+    state: absent
+    # 注意：>>>> remove会删除该用户的home目录 <<<<
+    # 也就是说，之前该用户下的所有内容都将被删除，相当于格式化
+    remove: yes
+
+- name: 删除group组
+  group:
+    name: "{{ group_name }}"
+    state: absent
+
+#- name: 新建group组
+#  group:
+#    name: "{{ group_name }}"
+#    state: present
+#
+#- name: 添加用户并生成ssh key
+#  user:
+#    name: "{{ username }}"
+#    group: "{{ group_name }}"
+#    generate_ssh_key: yes
+#    ssh_key_bits: 2048
+#    ssh_key_file: .ssh/id_rsa
+#
+#- name: 发送执行主机公钥
+#  authorized_key:
+#    user: "{{ username }}"
+#    state: present
+#    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+#  ignore_errors: true

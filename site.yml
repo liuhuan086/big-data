@@ -1,0 +1,189 @@
+---
+
+- hosts: all
+  remote_user: root
+  roles:
+    - user
+#
+#- name: 配置ssh
+#  hosts: all
+#  remote_user: "{{ username }}"
+#  roles:
+#    - ssh
+#
+#- hosts: all
+#  remote_user: "{{ username }}"
+#  roles:
+#    - hadoop
+#
+#- hosts: zk
+#  remote_user: "{{ username }}"
+#  roles:
+#    - zookeeper
+
+#- hosts: all
+#  remote_user: "{{ username }}"
+#  roles:
+#    - hbase
+
+#- hosts: all
+#  remote_user: "{{ username }}"
+#  roles:
+#    - jdk
+#
+#- hosts: zk
+#  remote_user: "{{ username }}"
+#  become: yes
+#  become_user: root
+#
+#  tasks:
+#    - name: 启动zk
+#      shell:
+#        sh "{{ install_dir }}"/zookeeper/bin/zkServer.sh start
+#
+#    - name: 通过jps查看zk状态
+#      shell:
+#        "{{ install_dir }}/jdk/bin/jps"
+#      register: info
+#
+#    - name: zk启动失败则终止
+#      fail:
+#        msg: "zookeeper start failed"
+#      when: '"QuorumPeerMain" not in info.stdout'
+#
+#- hosts: jn
+#  remote_user: "{{ username }}"
+#  become: yes
+#  become_user: root
+#
+#  tasks:
+#    - name: 启动jn
+#      shell:
+#        nohup "{{ install_dir }}"/hadoop/bin/hdfs --daemon start journalnode
+#
+#    - name: 通过jps查看jn状态
+#      shell:
+#        "{{ install_dir }}/jdk/bin/jps"
+#      register: info
+#
+#    - name: jn启动失败则终止
+#      fail:
+#        msg: "zookeeper start failed"
+#      when: '"JournalNode" not in info.stdout'
+#
+#- hosts: nn1
+#  remote_user: "{{ username }}"
+#  become: yes
+#  become_user: root
+#
+#  tasks:
+#    - name: 格式化nn1
+#      shell:
+#        nohup "{{ install_dir }}/hadoop/bin/hdfs" namenode -format
+#      register: info
+#
+#    - name: 启动nn1
+#      shell:
+#        nohup "{{ install_dir }}/hadoop/bin/hdfs" --daemon start namenode
+#
+#    - name: 通过jps查看nn状态
+#      shell:
+#        "{{ install_dir }}/jdk/bin/jps"
+#      register: info
+#
+#    - name: nn启动失败则终止
+#      fail:
+#        msg: "zookeeper start failed"
+#      when: '"NameNode" not in info.stdout'
+#
+#- hosts: nn2
+#  remote_user: "{{ username }}"
+#  become: yes
+#  become_user: root
+#
+#  tasks:
+#    - name: 检查是否启动过
+#      shell: ls "{{ install_dir }}/hadoop/nn2_exec_history"
+#      ignore_errors: yes
+#      register: nn2_exec_info
+#
+#    - name: 启动nn2
+#      shell:
+#        nohup "{{ install_dir }}/hadoop/bin/hdfs" namenode -bootstrapStandby
+#      register: info
+#      when: nn2_exec_info.failed == true
+#
+#    - name: show info
+#      fail:
+#        msg: "nn2 standby failed"
+#      when: info is failed
+#
+#    - name: 首次格式化后创建zkfc_formated
+#      shell:
+#        touch "{{ install_dir }}/hadoop/nn2_exec_history"
+#      when: nn2_exec_info.failed == true
+#
+#- hosts: nn1
+#  remote_user: "{{ username }}"
+#  become: yes
+#  become_user: root
+#
+#  tasks:
+#    - name: stop active namenode hdfs
+#      shell:
+#        nohup "{{ install_dir }}/hadoop/sbin/hadoop-daemon.sh" stop namenode
+#      register: info
+#
+#    - name: end
+#      fail:
+#        msg: "zkfc -formatZK failed"
+#      when: '"NameNode" in info.stdout'
+#
+#    - name: 检查是否格式化过
+#      shell: ls "{{ install_dir }}/hadoop/zkfc_formated"
+#      ignore_errors: yes
+#      register: zkfc_format_info
+#
+##    首次启动需要执行
+#    - name: 格式化nn1 zk
+#      shell:
+#        nohup "{{ install_dir }}/hadoop/bin/hdfs" zkfc -formatZK
+#      when: zkfc_format_info.failed == true
+#
+#    - name: 首次格式化后创建zkfc_formated
+#      shell:
+#        touch "{{ install_dir }}/hadoop/zkfc_formated"
+#      when: zkfc_format_info.failed == true
+#
+#- hosts: jn
+#  remote_user: "{{ username }}"
+#  become: yes
+#  become_user: root
+#
+#  tasks:
+#    - name: 停止jn
+#      shell:
+#        nohup "{{ install_dir }}"/hadoop/bin/hdfs --daemon stop journalnode
+#
+#- hosts: nn1
+#  remote_user: "{{ username }}"
+#  become: yes
+#  become_user: root
+#  tasks:
+#    - name: 启动hdfs
+#      shell:
+#        nohup "{{ install_dir }}"/hadoop/sbin/start-dfs.sh
+
+#- hosts: nn1
+#  remote_user: "{{ username }}"
+#  become: yes
+#  become_user: root
+#  tasks:
+#    - name: 启动hbase
+#      shell:
+#        nohup "{{ install_dir }}"/hbase/bin/hbase-daemon.sh start master
+#
+#    - name: 启动regionserver
+#      shell:
+#        nohup "{{ install_dir }}"/hbase/bin/hbase-daemon.sh start regionserver
+
